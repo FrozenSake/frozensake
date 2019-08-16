@@ -1,0 +1,4 @@
+provider: Google
+google_project: ${PROJECT_ID}
+google_client_email: gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com
+google_json_key_string: '$(cat gcs-key.json)'

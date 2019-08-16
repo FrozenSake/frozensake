@@ -43,6 +43,7 @@ Thumbs.db
 # Secrets #
 ###########
 *.key
+*key.json
 
 # SSH Keys #
 ############

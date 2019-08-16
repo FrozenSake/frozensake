@@ -1,3 +1,3 @@
-# Monitoring
+# Vault
 
-This repository covers all the set-up for the monitoring cluster. This uses prometheus and grafana, and also includes configuration files for setting up metric exporters on other servers and services.
+This repository covers all the set-up for the vault cluster. This is based on (this guide)[<https://github.com/hashicorp/vault-guides/tree/master/operations/provision-vault/best-practices/terraform-aws>] but adjusted for GCP.
