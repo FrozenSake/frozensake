@@ -131,13 +131,13 @@ resource "google_container_cluster" "gitlab-cluster" {
   ]
 }
 
-data "local_file" "pd-ssd-storage.yaml" {
+data "local_file" "pd-ssd-storage" {
   filename = "./pd-ssd-storage.yaml"
 }
 
 #resource kubectl_secret_1
 
-data "local_file" "rails.yaml" {
+data "local_file" "rails" {
   filename = "./rails.yaml"
 }
 
