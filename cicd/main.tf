@@ -30,10 +30,29 @@ provider "google" {
   zone        = "${var.zone}"
 }
 
+/*provider "kubernetes" {
+  host = "${google_container_cluster.gitlab-cluster.endpoint}"
+
+  client_certificate     = "${google_container_cluster.gitlab-cluster.master_auth.0.client_certificate}"
+  client_key             = "${google_container_cluster.gitlab-cluster.master_auth.0.client_key}"
+  cluster_ca_certificate = "${google_container_cluster.gitlab-cluster.master_auth.0.cluster_ca_certificate}"
+}*/ #Removed due to certificate signing issue. Will re-add later
+
 resource "random_password" "db-password" {
   length  = 16
   special = true
 }
+
+/*resource "kubernetes_secret" "gitlab-db-secret" {
+  metadata {
+    name = "gitlab-pg"
+    #gitlab-postgres
+  }
+
+  data = {
+    password = "${random_password.db-password.result}"
+  }
+}*/ #Disabled until Kube provider returned.
 
 resource "google_storage_bucket" "gitlab-uploads" {
   name      = "${var.PROJECT_ID}-gitlab-uploads"
@@ -132,6 +151,12 @@ resource "google_sql_database_instance" "gitlab-master" {
 resource "google_sql_database" "gitlab-postgres" {
   name     = "gitlab-db"
   instance = "${google_sql_database_instance.gitlab-master.name}"
+}
+
+resource "google_sql_user" "users" {
+  name     = "gitlab"
+  instance = "${google_sql_database_instance.gitlab-master.name}"
+  password = "${random_password.db-password.result}"
 }
 
 resource "google_redis_instance" "gitlab-redis" {
