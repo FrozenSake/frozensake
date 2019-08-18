@@ -1,28 +1,33 @@
-variable region {
-
+variable "region" {
+  type    = string
+  default = "northamerica-northeast1"
 }
 
-variable zone {
-
+variable "zone" {
+  type    = string
+  default = "northamerica-northeast1a"
 }
 
-resource random password {
-
+variable "service-key" {
+  type    = string
+  default = "./gcs-key.json"
 }
 
-variable service-key {
-
-}
-
-variable db-user {
-
+variable "gitlab-db-user" {
+  type    = string
+  default = "gitlab"
 }
 
 provider "google" {
-  credentials = "${file("*.json")}"
+  credentials = "${file("${var.service-key}")}"
   project     = "${var.project}"
   region      = "${var.region}"
   zone        = "${var.zone}"
+}
+
+resource "random_password" "db-password" {
+  length  = 16
+  special = true
 }
 
 resource "gcp_storage_bucket" "${var.project}-uploads" {
@@ -51,17 +56,28 @@ resource "gcp_storage_bucket" "${var.project}-registry" {
   project   =  "${var.project}"
 }
 
-resource "google_compute_address" "sql_ip" {
+resource "google_compute_address" "gitlab-ip" {
+  name = "gitlab-ip"
 
-}
-
-resource "google_compute_network_peering" "sql-to-gitlab" {
-
+  labels = [
+    cost_center = "CICD"
+    purpose     = "CICD"
+  ]
 }
 
 resource "google_compute_network" "gitlab-network" {
-
+  name = "gitlab-network"
 }
+
+resource "google_compute_subnetwork" "gitlab-sql-db-net" {
+  name = "gitlab-db-subnet"
+  ip_cidr_range = "10.120.120.0/24"
+  network = "${google_compute_network.gitlab-network.self_link}"
+}
+
+/*resource "google_compute_network_peering" "sql-to-gitlab" {
+
+}*/
 
 /*resource "google_compute_subnetwork" "gitlab-subnetwork" {
 
@@ -76,6 +92,11 @@ resource "google_sql_database_instance" "gitlab-master" {
   settings {
     tier = "db-f1-micro"
   }
+
+  user_labels = [
+    cost_center = "CICD"
+    purpose     = "CICD"
+  ]
 }
 
 resource "google_sql_database" "gitlab-postgres" {
@@ -84,11 +105,30 @@ resource "google_sql_database" "gitlab-postgres" {
 }
 
 resource "google_redis_instance" "gitlab-redis" {
+  name           = "gitlab-redis"
+  display_name   = "gitlab-redis"
+  tier           = "BASIC"
+  memory_size_gb = 2
 
+  location_id        = "${var.zone}"
+  authorized_network = "${google_compute_network.gitlab-network.self_link}"
+
+  labels = [
+    cost_center = "CICD"
+    purpose     = "CICD"
+  ]
+
+  #redis_version not included, thus using latest supported
 }
 
 resource "google_container_cluster" "gitlab-cluster" {
+  name         = "gitlab-kubernetes-cluster"
+  location     = "${var.zone}"
+  machine_type = "n1-standard-4"
 
+  ip_allocation_policy = [
+    use_ip_aliases = true
+  ]
 }
 
 data "local_file" "pd-ssd-storage.yaml" {
@@ -104,4 +144,3 @@ data "local_file" "rails.yaml" {
 #resource kubectl_secret_2
 
 #ansible?
-
