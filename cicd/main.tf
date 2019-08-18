@@ -30,30 +30,30 @@ resource "random_password" "db-password" {
   special = true
 }
 
-resource "gcp_storage_bucket" "${var.project}-uploads" {
-  name      = "${var.project}-uploads"
+resource "gcp_storage_bucket" "gitlab-uploads" {
+  name      = "${var.project}-gitlab-uploads"
   location  = "US"
-  project   =  "${var.project}"
+  project   = "${var.project}"
 }
-resource "gcp_storage_bucket" "${var.project}-artifacts" {
-  name      = "${var.project}-artifacts"
+resource "gcp_storage_bucket" "gitlab-artifacts" {
+  name      = "${var.project}-gitlab-artifacts"
   location  = "US"
-  project   =  "${var.project}"
+  project   = "${var.project}"
 }
-resource "gcp_storage_bucket" "${var.project}-lfs" {
-  name      = "${var.project}-lfs"
+resource "gcp_storage_bucket" "gitlab-lfs" {
+  name      = "${var.project}-gitlab-lfs"
   location  = "US"
-  project   =  "${var.project}"
+  project   = "${var.project}"
 }
-resource "gcp_storage_bucket" "${var.project}-packages" {
-  name      = "${var.project}-packages"
+resource "gcp_storage_bucket" "gitlab-packages" {
+  name      = "${var.project}-gitlab-packages"
   location  = "US"
-  project   =  "${var.project}"
+  project   = "${var.project}"
 }
-resource "gcp_storage_bucket" "${var.project}-registry" {
-  name      = "${var.project}-registry"
+resource "gcp_storage_bucket" "gitlab-registry" {
+  name      = "${var.project}-gitlab-registry"
   location  = "US"
-  project   =  "${var.project}"
+  project   = "${var.project}"
 }
 
 resource "google_compute_address" "gitlab-ip" {
