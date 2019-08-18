@@ -1,0 +1,10 @@
+#!bin/bash
+
+cd ..
+export PROJECT_ID=${PWD##*/}
+cd -
+
+kubectl create secret generic gitlab-pg --from-literal=password=${PASSWORD}
+
+kubectl create secret generic google-application-credentials \
+    --from-file=gcs-application-credentials-file=./gcs-key.json
