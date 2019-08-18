@@ -15,7 +15,7 @@ variable "zone" {
 
 variable "service-key" {
   type    = string
-  default = "./gcs-key.json"
+  default = "./terraform-key.json"
 }
 
 variable "gitlab-db-user" {
