@@ -1,3 +1,8 @@
+variable "PROJECT_ID" {
+  type    = string
+  default = "frozensake"
+}
+
 variable "region" {
   type    = string
   default = "northamerica-northeast1"
@@ -20,7 +25,7 @@ variable "gitlab-db-user" {
 
 provider "google" {
   credentials = "${file("${var.service-key}")}"
-  project     = "${var.project}"
+  project     = "${var.PROJECT_ID}"
   region      = "${var.region}"
   zone        = "${var.zone}"
 }
@@ -31,63 +36,63 @@ resource "random_password" "db-password" {
 }
 
 resource "google_storage_bucket" "gitlab-uploads" {
-  name      = "${var.project}-gitlab-uploads"
+  name      = "${var.PROJECT_ID}-gitlab-uploads"
   location  = "US"
-  project   = "${var.project}"
+  project   = "${var.PROJECT_ID}"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 resource "google_storage_bucket" "gitlab-artifacts" {
-  name      = "${var.project}-gitlab-artifacts"
+  name      = "${var.PROJECT_ID}-gitlab-artifacts"
   location  = "US"
-  project   = "${var.project}"
+  project   = "${var.PROJECT_ID}"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 resource "google_storage_bucket" "gitlab-lfs" {
-  name      = "${var.project}-gitlab-lfs"
+  name      = "${var.PROJECT_ID}-gitlab-lfs"
   location  = "US"
-  project   = "${var.project}"
+  project   = "${var.PROJECT_ID}"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 resource "google_storage_bucket" "gitlab-packages" {
-  name      = "${var.project}-gitlab-packages"
+  name      = "${var.PROJECT_ID}-gitlab-packages"
   location  = "US"
-  project   = "${var.project}"
+  project   = "${var.PROJECT_ID}"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 resource "google_storage_bucket" "gitlab-registry" {
-  name      = "${var.project}-gitlab-registry"
+  name      = "${var.PROJECT_ID}-gitlab-registry"
   location  = "US"
-  project   = "${var.project}"
+  project   = "${var.PROJECT_ID}"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 
 resource "google_compute_address" "gitlab-ip" {
   name = "gitlab-ip"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 
 resource "google_compute_network" "gitlab-network" {
@@ -112,16 +117,16 @@ resource "google_sql_database_instance" "gitlab-master" {
   name             = "gitlab-master-instance"
   database_version = "POSTGRES_9_6"
   region           = "${var.region}"
-  project          = "${var.project}"
+  project          = "${var.PROJECT_ID}"
 
   settings {
     tier = "db-f1-micro"
   }
 
-  user_labels = {
-    cost_center = "CICD",
+  /*user_labels {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 }
 
 resource "google_sql_database" "gitlab-postgres" {
@@ -138,10 +143,10 @@ resource "google_redis_instance" "gitlab-redis" {
   location_id        = "${var.zone}"
   authorized_network = "${google_compute_network.gitlab-network.self_link}"
 
-  labels = {
-    cost_center = "CICD",
+  /*labels = {
+    cost_center = "CICD"
     purpose     = "CICD"
-  }
+  }*/
 
   #redis_version not included, thus using latest supported
 }
@@ -149,10 +154,13 @@ resource "google_redis_instance" "gitlab-redis" {
 resource "google_container_cluster" "gitlab-cluster" {
   name         = "gitlab-kubernetes-cluster"
   location     = "${var.zone}"
-  machine_type = "n1-standard-4"
 
-  ip_allocation_policy = {
-    use_ip_aliases = true,
+  node_config {
+    machine_type = "n1-standard-4"
+  }
+
+  ip_allocation_policy {
+    use_ip_aliases = true
   }
 }
 
