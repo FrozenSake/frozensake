@@ -4,7 +4,14 @@ cd ..
 export PROJECT_ID=${PWD##*/}
 cd -
 
+
 kubectl create secret generic gitlab-pg --from-literal=password=${PASSWORD}
 
+#Create kubectl secret for cloud storage credentials
 kubectl create secret generic google-application-credentials \
     --from-file=gcs-application-credentials-file=./gcs-key.json
+
+#Grant Tiller cluster-admin role
+kubectl create serviceaccount tiller --namespace kube-system
+kubectl create clusterrolebinding tiller-admin-binding \
+    --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
