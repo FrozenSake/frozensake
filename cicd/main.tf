@@ -30,64 +30,64 @@ resource "random_password" "db-password" {
   special = true
 }
 
-resource "gcp_storage_bucket" "gitlab-uploads" {
+resource "google_storage_bucket" "gitlab-uploads" {
   name      = "${var.project}-gitlab-uploads"
   location  = "US"
   project   = "${var.project}"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
-resource "gcp_storage_bucket" "gitlab-artifacts" {
+resource "google_storage_bucket" "gitlab-artifacts" {
   name      = "${var.project}-gitlab-artifacts"
   location  = "US"
   project   = "${var.project}"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
-resource "gcp_storage_bucket" "gitlab-lfs" {
+resource "google_storage_bucket" "gitlab-lfs" {
   name      = "${var.project}-gitlab-lfs"
   location  = "US"
   project   = "${var.project}"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
-resource "gcp_storage_bucket" "gitlab-packages" {
+resource "google_storage_bucket" "gitlab-packages" {
   name      = "${var.project}-gitlab-packages"
   location  = "US"
   project   = "${var.project}"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
-resource "gcp_storage_bucket" "gitlab-registry" {
+resource "google_storage_bucket" "gitlab-registry" {
   name      = "${var.project}-gitlab-registry"
   location  = "US"
   project   = "${var.project}"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
 
 resource "google_compute_address" "gitlab-ip" {
   name = "gitlab-ip"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
 
 resource "google_compute_network" "gitlab-network" {
@@ -118,10 +118,10 @@ resource "google_sql_database_instance" "gitlab-master" {
     tier = "db-f1-micro"
   }
 
-  user_labels = [
+  user_labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 }
 
 resource "google_sql_database" "gitlab-postgres" {
@@ -138,10 +138,10 @@ resource "google_redis_instance" "gitlab-redis" {
   location_id        = "${var.zone}"
   authorized_network = "${google_compute_network.gitlab-network.self_link}"
 
-  labels = [
+  labels = {
     cost_center = "CICD",
     purpose     = "CICD"
-  ]
+  }
 
   #redis_version not included, thus using latest supported
 }
@@ -151,9 +151,9 @@ resource "google_container_cluster" "gitlab-cluster" {
   location     = "${var.zone}"
   machine_type = "n1-standard-4"
 
-  ip_allocation_policy = [
-    use_ip_aliases = true
-  ]
+  ip_allocation_policy = {
+    use_ip_aliases = true,
+  }
 }
 
 data "local_file" "pd-ssd-storage" {
