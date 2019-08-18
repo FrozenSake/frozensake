@@ -34,33 +34,58 @@ resource "gcp_storage_bucket" "gitlab-uploads" {
   name      = "${var.project}-gitlab-uploads"
   location  = "US"
   project   = "${var.project}"
+
+  labels = [
+    cost_center = "CICD",
+    purpose     = "CICD"
+  ]
 }
 resource "gcp_storage_bucket" "gitlab-artifacts" {
   name      = "${var.project}-gitlab-artifacts"
   location  = "US"
   project   = "${var.project}"
+
+  labels = [
+    cost_center = "CICD",
+    purpose     = "CICD"
+  ]
 }
 resource "gcp_storage_bucket" "gitlab-lfs" {
   name      = "${var.project}-gitlab-lfs"
   location  = "US"
   project   = "${var.project}"
+
+  labels = [
+    cost_center = "CICD",
+    purpose     = "CICD"
+  ]
 }
 resource "gcp_storage_bucket" "gitlab-packages" {
   name      = "${var.project}-gitlab-packages"
   location  = "US"
   project   = "${var.project}"
+
+  labels = [
+    cost_center = "CICD",
+    purpose     = "CICD"
+  ]
 }
 resource "gcp_storage_bucket" "gitlab-registry" {
   name      = "${var.project}-gitlab-registry"
   location  = "US"
   project   = "${var.project}"
+
+  labels = [
+    cost_center = "CICD",
+    purpose     = "CICD"
+  ]
 }
 
 resource "google_compute_address" "gitlab-ip" {
   name = "gitlab-ip"
 
   labels = [
-    cost_center = "CICD"
+    cost_center = "CICD",
     purpose     = "CICD"
   ]
 }
@@ -94,7 +119,7 @@ resource "google_sql_database_instance" "gitlab-master" {
   }
 
   user_labels = [
-    cost_center = "CICD"
+    cost_center = "CICD",
     purpose     = "CICD"
   ]
 }
@@ -114,7 +139,7 @@ resource "google_redis_instance" "gitlab-redis" {
   authorized_network = "${google_compute_network.gitlab-network.self_link}"
 
   labels = [
-    cost_center = "CICD"
+    cost_center = "CICD",
     purpose     = "CICD"
   ]
 
