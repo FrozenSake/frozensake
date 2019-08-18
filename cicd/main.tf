@@ -10,7 +10,7 @@ variable "region" {
 
 variable "zone" {
   type    = string
-  default = "northamerica-northeast1a"
+  default = "northamerica-northeast1-a"
 }
 
 variable "service-key" {
@@ -154,6 +154,8 @@ resource "google_redis_instance" "gitlab-redis" {
 resource "google_container_cluster" "gitlab-cluster" {
   name         = "gitlab-kubernetes-cluster"
   location     = "${var.zone}"
+
+  initial_node_count = 1
 
   node_config {
     machine_type = "n1-standard-4"
